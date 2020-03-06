@@ -1,0 +1,124 @@
+import numpy as np
+from CryptographyUI import * 
+
+N = 2
+
+def ButtonClicked(self):
+    self.encryptButton.clicked.connect(self.Encrypt)
+    self.decryptButton.clicked.connect(self.Decrypt)
+
+def Encrypt(self):
+    try:
+        x = np.array([[int(self.C11.text()),int(self.C12.text())],
+                      [int(self.C21.text()),int(self.C22.text())]])
+    except:
+        QtWidgets.QMessageBox.warning(MainWindow, 'Error!', 'Please enter valid inputs in Encryption Matrix')
+    
+    if round(np.linalg.det(x)) == 1 or round(np.linalg.det(x)) == -1:
+        unencrypted_msg = str(self.unencrypted_msg.text())
+        unencrypted_msg = unencrypted_msg.replace(" ", "_")
+        if len(unencrypted_msg)%2 != 0: 
+            unencrypted_msg = unencrypted_msg + "_" 
+        
+        num_list = []
+        for char in unencrypted_msg:
+            if char == "_":
+                num_list.append(ord(char) - 95)
+            else:
+                num_list.append(ord(char) - 64)
+            
+        num_vector = [num_list[i:i+N] for i in range(0, len(num_list), N)]
+    
+        encrypted_list = []
+        for j in range(len(num_vector)): 
+            encrypted_list.append(np.matmul(num_vector[j], x))
+        
+        encrypted_modlist = [] 
+        for k in range(len(num_vector)): 
+            encrypted_modlist.append(encrypted_list[k]%27)
+        
+        total_list = [] 
+        for a in encrypted_modlist: 
+            for b in a: 
+                total_list.append(b)
+            
+        final = [] 
+        for num in total_list: 
+            if num == 0:
+                final.append(chr(num + 95))
+            else:
+                final.append(chr(num + 64))
+
+        final_encrypt = "".join(final)
+        final_encrypt = final_encrypt.replace("_", " ")
+        self.Encrypted_Output.setText(final_encrypt)
+        
+    else:
+        QtWidgets.QMessageBox.warning(MainWindow, 'Error!', 'Determinant of the Matrix should be 1 or -1')
+    
+def Decrypt(self):
+    try:
+        x = np.array([[int(self.C11.text()),int(self.C12.text())],
+                      [int(self.C21.text()),int(self.C22.text())]])
+    except:
+        QtWidgets.QMessageBox.warning(MainWindow, 'Error!', 'Please enter valid inputs in Encryption Matrix')
+        
+    xinv = np.linalg.inv(x)
+    
+    if round(np.linalg.det(x)) == 1 or round(np.linalg.det(x)) == -1:
+         encrypted_msg = str(self.encrypted_msg.text())
+         encrypted_msg = encrypted_msg.replace(" ", "_")
+         if len(encrypted_msg)%2 != 0: 
+             encrypted_msg = encrypted_msg + "_" 
+    
+         num_list = []
+         for char in encrypted_msg:
+            if char == "_":
+                num_list.append(ord(char) - 95)
+            else:
+                num_list.append(ord(char) - 64)
+            
+         num_vector = [num_list[i:i+N] for i in range(0, len(num_list), N)]
+    
+         decrypted_list = []
+         for j in range(len(num_vector)): 
+            decrypted_list.append((np.matmul(num_vector[j], xinv)))
+        
+         decrypted_modlist = [] 
+         for k in range(len(num_vector)): 
+            decrypted_modlist.append(decrypted_list[k]%27)
+        
+         total_list = [] 
+         for a in decrypted_modlist: 
+            for b in a: 
+                total_list.append(b)
+            
+         final = [] 
+         for num in total_list: 
+            if round(num) == 0:
+                final.append(chr(int(round(num + 95))))
+            elif round(num) == 27:
+                final.append(chr(int(round(num + 68))))
+            else:
+                final.append(chr(int(round(num + 64))))
+
+         final_decrypt = "".join(final)
+         final_decrypt = final_decrypt.replace("_", " ")
+         self.Decrypted_Output.setText(final_decrypt)
+        
+    else:
+        QtWidgets.QMessageBox.warning(MainWindow, 'Error!', 'Determinant of the Matrix should be 1 or -1')
+    
+Encrypt_DecryptUI.ButtonClicked = ButtonClicked
+Encrypt_DecryptUI.Encrypt = Encrypt
+Encrypt_DecryptUI.Decrypt = Decrypt
+    
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ED = Encrypt_DecryptUI()
+    ED.MainUI(MainWindow)
+    ED.ButtonClicked()
+    MainWindow.show()
+    sys.exit(app.exec_())
