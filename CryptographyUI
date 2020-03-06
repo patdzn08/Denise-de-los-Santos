@@ -1,0 +1,149 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Encrypt_DecryptUI(object):
+    def MainUI(self, MainWindow):
+        MainWindow.setWindowModality(QtCore.Qt.WindowModal)
+        MainWindow.resize(500, 300)
+        MainWindow.setMinimumSize(QtCore.QSize(500, 300))
+        MainWindow.setMaximumSize(QtCore.QSize(500, 300))
+        
+        self.stylesheet = """
+        
+        QWidget{
+        background-color: rgb(0, 0, 0);}
+        
+        QLineEdit{
+        color: white;
+        border: 1px solid gray;}
+        
+        QLabel{
+        color: white;}
+        
+        QPushButton{
+        height: 25%;
+        width: 75%;
+        background-color: rgb(169, 169, 169);
+        color: white;
+        border: 1px solid gray;}
+        
+        QPushButton:hover{
+        background-color: rgb(128, 128, 128);}
+        
+        QPushButton:pressed{
+        background-color: rgb(105, 105, 105);}
+                        
+        QTextBrowser{
+        color: white;
+        border: 1px solid gray;}
+        
+        """
+                
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        
+        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 500, 300))
+        
+        self.tab = QtWidgets.QWidget()
+        
+        self.label = QtWidgets.QLabel("Encryption Matrix", self.tab)
+        self.label.setGeometry(QtCore.QRect(75, 20, 350, 30))
+        font = QtGui.QFont()
+        font.setFamily("Showcard Gothic")
+        font.setPointSize(20)
+        self.label.setFont(font)
+  
+        self.C11 = QtWidgets.QLineEdit(self.tab)
+        self.C11.setGeometry(QtCore.QRect(90, 70, 110, 20))
+
+        self.C12 = QtWidgets.QLineEdit(self.tab)
+        self.C12.setGeometry(QtCore.QRect(270, 70, 110, 20))
+
+        self.C21 = QtWidgets.QLineEdit(self.tab)
+        self.C21.setGeometry(QtCore.QRect(90, 150, 110, 20))
+
+        self.C22 = QtWidgets.QLineEdit(self.tab)
+        self.C22.setGeometry(QtCore.QRect(270, 150, 110, 20))
+
+        self.clearButton = QtWidgets.QPushButton("Clear", self.tab)
+        self.clearButton.setGeometry(QtCore.QRect(200, 200, 75, 25))
+
+        self.clearButton.clicked.connect(self.C11.clear)
+        self.clearButton.clicked.connect(self.C12.clear)
+        self.clearButton.clicked.connect(self.C21.clear)
+        self.clearButton.clicked.connect(self.C22.clear)
+        
+        self.tabWidget.addTab(self.tab, "Matrix")
+        
+        self.tab_2 = QtWidgets.QWidget()
+        
+        self.unencrypted_msg = QtWidgets.QLineEdit(self.tab_2)
+        self.unencrypted_msg.setGeometry(QtCore.QRect(10, 50, 475, 40))
+
+        self.label_2 = QtWidgets.QLabel("Enter the message you would like to encrypt (in uppercase):", self.tab_2)
+        self.label_2.setGeometry(QtCore.QRect(10, 10, 320, 40))
+        self.label_2.setStyleSheet(" color: white; \n")
+        
+        self.encryptButton = QtWidgets.QPushButton("Encrypt", self.tab_2)
+        self.encryptButton.setGeometry(QtCore.QRect(10, 100, 75, 25))
+
+        self.clearButton2 = QtWidgets.QPushButton("Clear", self.tab_2)
+        self.clearButton2.setGeometry(QtCore.QRect(100, 100, 75, 25))
+
+        self.label_3 = QtWidgets.QLabel("Encrypted Message is:", self.tab_2)
+        self.label_3.setGeometry(QtCore.QRect(10, 150, 140, 15))
+        
+        self.Encrypted_Output = QtWidgets.QTextBrowser(self.tab_2)
+        self.Encrypted_Output.setGeometry(QtCore.QRect(10, 170, 475, 50))
+       
+        self.clearButton2.clicked.connect(self.unencrypted_msg.clear)
+        self.clearButton2.clicked.connect(self.Encrypted_Output.clear)
+        
+        self.tabWidget.addTab(self.tab_2, "Encrypt")
+        
+        self.tab_3 = QtWidgets.QWidget()
+        
+        self.encrypted_msg = QtWidgets.QLineEdit(self.tab_3)
+        self.encrypted_msg.setGeometry(QtCore.QRect(10, 50, 475, 40))
+               
+        self.label_4 = QtWidgets.QLabel("Enter Encrypted Message:", self.tab_3)
+        self.label_4.setGeometry(QtCore.QRect(10, 10, 320, 40))
+         
+        self.decryptButton = QtWidgets.QPushButton("Decrypt", self.tab_3)
+        self.decryptButton.setGeometry(QtCore.QRect(10, 100, 75, 25))
+
+        self.clearButton3 = QtWidgets.QPushButton("Clear", self.tab_3)
+        self.clearButton3.setGeometry(QtCore.QRect(100, 100, 75, 25))
+
+        self.label_5 = QtWidgets.QLabel("Decrypted Message is:", self.tab_3)
+        self.label_5.setGeometry(QtCore.QRect(10, 150, 140, 15))
+
+        self.Decrypted_Output = QtWidgets.QTextBrowser(self.tab_3)
+        self.Decrypted_Output.setGeometry(QtCore.QRect(10, 170, 475, 50))
+       
+        self.clearButton3.clicked.connect(self.encrypted_msg.clear)
+        self.clearButton3.clicked.connect(self.Decrypted_Output.clear)
+        
+        self.tabWidget.addTab(self.tab_3, "Decrypt")
+        
+        MainWindow.setCentralWidget(self.centralwidget)
+        
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 20))
+        MainWindow.setMenuBar(self.menubar)
+        
+        self.tabWidget.setCurrentIndex(0)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
+        MainWindow.setWindowTitle("Cryptography")
+        MainWindow.setWindowIcon(QtGui.QIcon('security-crypto-492448.png'))
+        
+        MainWindow.setStyleSheet(self.stylesheet)
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Encrypt_DecryptUI()
+    ui.MainUI(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
